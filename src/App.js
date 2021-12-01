@@ -17,6 +17,8 @@ function App() {
   const [choiceOne, setChoiceOne] = useState(null);
   const [choiceTwo, setChoiceTwo] = useState(null);
   const [disabled, setDisabled] = useState(false);
+  const [name, setName] = useState("");
+  const [user, setUser] = useState("");
 
   // shuffle card
   const shuffleCards = () => {
@@ -67,24 +69,44 @@ function App() {
     setDisabled(false);
   };
 
+  useEffect(() => {
+    if (user !== "") {
+      shuffleCards();
+    }
+  }, [user]);
+
   return (
     <div className="App">
-      <h1>Magic Game</h1>
-      <button onClick={shuffleCards}>New Game</button>
-
-      <div className="card-grid">
-        {cards.map((card) => (
-          <SingleCard
-            handleChoice={handleChoice}
-            key={card.id}
-            card={card}
-            flipped={card === choiceOne || card === choiceTwo || card.matched}
-            disabled={disabled}
+      {user !== "" ? (
+        <>
+          <h1>Magic Game</h1> <button onClick={shuffleCards}>New Game</button>
+          <p className="username">{user}</p>
+          <div className="card-grid">
+            {cards.map((card) => (
+              <SingleCard
+                handleChoice={handleChoice}
+                key={card.id}
+                card={card}
+                flipped={
+                  card === choiceOne || card === choiceTwo || card.matched
+                }
+                disabled={disabled}
+              />
+            ))}
+          </div>
+          <p>Turn: {turns}</p>
+        </>
+      ) : (
+        <div className="logincontainer">
+          <label>Name</label>
+          <input
+            type="text"
+            onChange={(e) => setName(e.target.value)}
+            placeholder="your name please"
           />
-        ))}
-      </div>
-
-      <p>Turn: {turns}</p>
+          <button onClick={() => setUser(name)}>login</button>
+        </div>
+      )}
     </div>
   );
 }
